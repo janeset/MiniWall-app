@@ -7,10 +7,10 @@
 
 1- Create private repo in github website
 
-2- save repo address : https://github.com/janeset/github-cloud-app.git 
+2- save repo address : https://github.com/janeset/MiniWall-app.git
 
 3- Create a github login token (Github.com > Setting > DeveloperSettings > Personal Access Token > Generate new token > Classic token > repo permission)
-    - token: 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
+    - token: ghp_MiniWall-app-super-secret-auth-token
 
 
 4- back to your teminal, where the repo is saved locally run "git init" the github repo
@@ -19,13 +19,13 @@
     // add remote repo from git
     4.2 - https://[Github_Username]:[Github_Token]@[Github_RepoName]
         - username: janeset
-        - repo: github.com/janeset/github-cloud-app.git
-        - token: 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
+        - repo: github.com/janeset/MiniWall-app.git
+        - token: ghp_MiniWall-app-super-secret-auth-token
 
-        - https://janeset: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@github.com/janeset/github-cloud-app.git
+        - https://janeset:ghp_MiniWall-app-super-secret-auth-token@github.com/janeset/MiniWall-app.git
     
     4.3 - type in terminal
-        git remote add origin https://janeset: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@github.com/janeset/github-cloud-app.git 
+        git remote add origin https://janeset:ghp_MiniWall-app-super-secret-auth-token@github.com/janeset/MiniWall-app.git 
 
 5- add files and commit
     git add .
@@ -44,7 +44,7 @@
 1- open terminal collection in your CloudVM using SSH
 
 2- clone repo from github (main branch) using the token
-    git clone --branch main  https://janeset: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@github.com/janeset/github-cloud-app.git 
+    git clone --branch main  https://janeset:ghp_MiniWall-app-super-secret-auth-token@github.com/janeset/MiniWall-app.git 
 
 3- change directory to your repo
     cd <repo name>
