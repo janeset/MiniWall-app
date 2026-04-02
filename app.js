@@ -7,11 +7,9 @@ const config = require('./config/config');
 // Import database connection functions
 const db = require('./config/db');  
 
-
 const bodyParser = require('body-parser');
 // Use body-parser middleware to parse incoming request bodies in a middleware before your handlers, available under the req.body property
 app.use(bodyParser.json());
-
 
 
 // IMPORT VARIABLES
@@ -21,7 +19,6 @@ const PORT = config.PORT;
 app.get('/', (req, res) => {
     res.send('Welcome to the Home page!');
 });
-
 
 // Connect to the database
 db.connectDB();

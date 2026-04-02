@@ -5,6 +5,9 @@ const router = express.Router();
 // import the Post model to interact with the posts collection in MongoDB
 const Post = require('../models/Post');
 
+const postService = require('../services/postService'); // Import the getAllPosts function from the postService.js file
+router.get('/getAll', postService.getAllPosts); // Use the getAllPosts function to handle GET requests to the /api/posts/getAll endpoint
+
 
 // route for post page, which will be accessed at http://localhost:3000/posts
 // router.get('/', (req, res) => {
