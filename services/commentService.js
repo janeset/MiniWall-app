@@ -1,0 +1,112 @@
+const Comment = require('../models/Comment');
+
+/*
+    Name    : getAllPosts
+    Purpose :  - Use 'GET request' with the '/api/posts/getAll' endpoint, to retrieve all posts from the database, and send the retrieved posts back to the client in JSON format.
+    returns  : - 200 OK status with the retrieved posts in JSON format if the operation is successful
+               - 400 Bad Request status with an error message if there is an error during the retrieval process
+*/
+const getAllCommentsByPostId = async(req, res) => {
+    try {
+        const comments = await Comment.find({ postId: req.params.postId }); // Retrieve all comments for a specific post
+        res.status(200).json(comments); // Send the retrieved comments back to the client with a 200 OK status
+    } catch (error) {
+        console.error('Error retrieving comments:', error);
+        res.status(400).send({message:error});
+    }
+}
+
+
+
+/*
+    Name    : createComment
+    Purpose :  - Use 'POST request' with the '/api/comments/:postId/new' endpoint, to create a new comment in the database, and send the created comment back to the client in JSON format.
+    returns  : - 200 OK status with the created comment in JSON format if the operation is successful
+               - 400 Bad Request status with an error message if there is an error during the creation process
+*/
+const createComment = async(req, res) => {
+    try {
+        const commentData = new Comment({
+                postId: req.params.postId,
+                text: req.body.text,
+                user: req.body.user
+        });
+
+        const commentToSave = await commentData.save();
+        res.send(commentToSave);
+    } catch (error) {
+        console.error('Error creating comment:', error);
+        res.status(400).send({message:error});
+    }
+}
+
+
+
+/*
+    Name    : getPostById
+    Purpose :  - Use 'GET request' with the '/api/posts/:postId' endpoint, to retrieve a post by its ID from the database, and send the retrieved post back to the client in JSON format.
+    returns  : - 200 OK status with the retrieved post in JSON format if the operation is successful
+               - 400 Bad Request status with an error message if there is an error during the retrieval process
+*/
+const getCommentById = async(req, res) => {
+    try {
+        const getCommentById = await Comment.findById(req.params.commentId);
+        res.send(getCommentById);
+    } catch (error) {
+        console.error('Error getting comment by ID:', error);
+        res.status(400).send({message:error});
+    }
+}
+
+
+
+/*
+    Name    : updateCommentById
+    Purpose :  - Use 'PATCH request' with the '/api/comments/:commentId' endpoint, to update a comment by its ID in the database, and send the updated comment back to the client in JSON format.
+    returns  : - 200 OK status with the updated comment in JSON format if the operation is successful
+               - 400 Bad Request status with an error message if there is an error during the update process
+*/
+const updateCommentById = async(req, res) => {
+    try {
+        const updatedCommentById = await Comment.updateOne(
+                    {_id:req.params.commentId,}, //find the comment by its ID
+                    // update the comment's fields with the new data from the request body using the $set operator
+                    {$set: {
+                        text: req.body.text,
+                        user: req.body.user
+                    }});        
+                res.send(updatedCommentById); //send the update result back to the client
+    } catch (error) {
+        console.error('Error updating comment by ID:', error);
+        res.status(400).send({message:error});
+    }
+}
+
+
+/*
+    Name    : deleteCommentById
+    Purpose :  - Use 'DELETE request' with the '/api/comments/:commentId' endpoint, to delete a comment by its ID from the database, and send the deleted comment back to the client in JSON format.
+    returns  : - 200 OK status with the deleted comment in JSON format if the operation is successful
+               - 400 Bad Request status with an error message if there is an error during the delete process
+*/
+const deleteCommentById = async(req, res) => {
+    try {
+        const deletedCommentById = await Comment.deleteOne( // delete the comment from the database using the deleteOne method 
+                    {_id:req.params.commentId} //find the comment by its ID
+                );
+                res.send(deletedCommentById); //send the delete result back to the client
+    } catch (error) {
+            console.error('Error deleting comment by ID:', error);
+        res.status(400).send({message:error});
+    }
+}
+
+// Export all methods so that it can be used in other parts of the application.
+module.exports = {
+    getAllCommentsByPostId, 
+    createComment,
+    getCommentById, 
+    updateCommentById,
+    deleteCommentById
+}
+    

@@ -1,11 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
-// import the Post model to interact with the posts collection in MongoDB
-const Post = require('../models/Post');
 
 // Import the methods function from the postService.js file to handle the logic for each endpoint
 const postService = require('../services/postService'); 
+const commentService = require('../services/commentService');
 
 // Define the routes for the posts endpoints and associate them with the corresponding methods from the postService.js file
  // Use the getAllPosts function to handle GET requests to the /api/posts/getAll endpoint
@@ -22,6 +21,9 @@ router.patch('/:postId', postService.updatePostById);
 
 // Use the deletePostById function to handle DELETE requests to the /api/posts/:postId endpoint
 router.delete('/:postId', postService.deletePostById); 
+
+// Use the getAllCommentsByPostId function to handle GET requests to the /api/posts/:postId/comments endpoint
+router.get('/:postId/comments', commentService.getAllCommentsByPostId); 
 
 
 // export the router to be used in app.js

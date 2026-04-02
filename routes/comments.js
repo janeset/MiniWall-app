@@ -7,6 +7,38 @@ const Comment = require('../models/Comment');
 // import the Post model to interact with the posts collection in MongoDB
 const Post = require('../models/Post');
 
+const commentService = require('../services/commentService');
+
+// ----------------------------------------------------------------------
+
+// Define the routes for the posts endpoints and associate them with the corresponding methods from the postService.js file
+
+// Use the createComment function to handle POST requests to the '/api/comments/:postId/new' endpoint
+router.post('/:postId/new', commentService.createComment); 
+
+// Use the getCommentById function to handle GET requests to the '/api/comments/:commentId' endpoint
+router.get('/:commentId', commentService.getCommentById); 
+
+// Use the updatePostById function to handle PATCH requests to the '/api/comments/:commentId' endpoint
+router.patch('/:commentId', commentService.updateCommentById); 
+
+// Use the deletePostById function to handle DELETE requests to the '/api/comments/:commentId' endpoint
+router.delete('/:commentId', commentService.deleteCommentById); 
+
+// Use the getAllCommentsByPostId function to handle GET requests to the '/api/comments/:postId/comments' endpoint
+router.get('/:postId/comments', commentService.getAllCommentsByPostId); 
+
+
+
+
+
+
+
+// ---------------------------------------------------------------------
+
+router.get('/:postId/comments', commentService.getAllCommentsByPostId); // Use the getAllCommentsById function to handle GET requests to the /api/comments/:postId/comments endpoint
+
+// create a comment for a post
 router.get('/:postId/comment', async (req, res) => {
     //res.send(`Like Page, I liked : ${req.params.postId}`);
     try{
