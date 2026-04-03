@@ -2,10 +2,32 @@ const express = require('express');
 
 const router = express.Router();
 
-// import the Like model to interact with the likes collection in MongoDB
-const Like = require('../models/Like');
-// import the Post model to interact with the posts collection in MongoDB
-const Post = require('../models/Post');
+const likeService = require('../services/likeService');
+const postService = require('../services/postService');
+
+
+// ----------------------------------------------------------------------
+
+// Define the routes for the posts endpoints and associate them with the corresponding methods from the like Service.js file
+
+// (Create)like a post by its ID, using a POST request to the '/api/likes/:postId/like' endpoint
+router.post('/:postId/like', likeService.likePost); 
+
+// (Delete)unlike a post by its ID, using a POST request to the '/api/likes/:postId/unlike' endpoint
+router.post('/:postId/unlike', likeService.unlikePost);  
+
+// get a list of all likes for a post by its ID, using a GET request to the '/api/likes/:postId/likes' endpoint
+router.get('/:postId/likes', likeService.getAllLikesByPostId); 
+
+// find a like by its ID, using a GET request to the '/api/likes/:likeId' endpoint
+router.get('/:likeId', likeService.getLikeById); 
+
+
+
+
+
+// ---------------------------------------------------------------------
+
 
 router.get('/:postId/like2', async (req, res) => {
     //res.send(`Like Page, I liked : ${req.params.postId}`);

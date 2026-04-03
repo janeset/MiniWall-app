@@ -1,9 +1,10 @@
 const Comment = require('../models/Comment');
+const Post = require('../models/Post');
 
 /*
-    Name    : getAllPosts
-    Purpose :  - Use 'GET request' with the '/api/posts/getAll' endpoint, to retrieve all posts from the database, and send the retrieved posts back to the client in JSON format.
-    returns  : - 200 OK status with the retrieved posts in JSON format if the operation is successful
+    Name    : getAllCommentsByPostId
+    Purpose :  - Use 'GET request' with the '/api/posts/:postId/comments' endpoint, to retrieve all comments for a specific post from the database, and send the retrieved comments back to the client in JSON format.
+    returns  : - 200 OK status with the retrieved comments in JSON format if the operation is successful
                - 400 Bad Request status with an error message if there is an error during the retrieval process
 */
 const getAllCommentsByPostId = async(req, res) => {
@@ -26,14 +27,25 @@ const getAllCommentsByPostId = async(req, res) => {
 */
 const createComment = async(req, res) => {
     try {
-        const commentData = new Comment({
-                postId: req.params.postId,
+        const getPostById = await Post.findById(req.params.postId); 
+        if (!getPostById) {
+            return res.status(404).send({message:`Post not found: ${req.params.postId}`});
+        } else { 
+            getPostById.comments += 1; //increment the comments count by 1
+            const updatedPost = await getPostById.save(); //save the updated post back to the database
+
+            //create a new comment document in the database with the postId and user information
+            const commentData = new Comment({
+                postId: updatedPost._id,
                 text: req.body.text,
                 user: req.body.user
-        });
+            }); 
 
-        const commentToSave = await commentData.save();
-        res.send(commentToSave);
+            //save the comment data to the database
+            const commentToSave = await commentData.save();
+            res.send(commentToSave);     
+        }
+        
     } catch (error) {
         console.error('Error creating comment:', error);
         res.status(400).send({message:error});
@@ -43,9 +55,9 @@ const createComment = async(req, res) => {
 
 
 /*
-    Name    : getPostById
-    Purpose :  - Use 'GET request' with the '/api/posts/:postId' endpoint, to retrieve a post by its ID from the database, and send the retrieved post back to the client in JSON format.
-    returns  : - 200 OK status with the retrieved post in JSON format if the operation is successful
+    Name    : getCommentById
+    Purpose :  - Use 'GET request' with the '/api/comments/:commentId' endpoint, to retrieve a comment by its ID from the database, and send the retrieved comment back to the client in JSON format.
+    returns  : - 200 OK status with the retrieved comment in JSON format if the operation is successful
                - 400 Bad Request status with an error message if there is an error during the retrieval process
 */
 const getCommentById = async(req, res) => {
@@ -91,10 +103,25 @@ const updateCommentById = async(req, res) => {
 */
 const deleteCommentById = async(req, res) => {
     try {
-        const deletedCommentById = await Comment.deleteOne( // delete the comment from the database using the deleteOne method 
-                    {_id:req.params.commentId} //find the comment by its ID
-                );
-                res.send(deletedCommentById); //send the delete result back to the client
+        // retrieve the comment and post by their IDs from the database
+        const getCommentById = await Comment.findById(req.params.commentId);
+        if (!getCommentById) {
+            return res.status(404).send({message:`Comment not found: ${req.params.commentId}`});
+        }  
+
+        const getPostById = await Post.findById(req.params.postId); 
+        if (!getPostById) {
+            return res.status(404).send({message:`Post not found: ${req.params.postId}`});
+
+        } else { 
+            // decrement the comments count by 1 and save the updated post back to the database
+            getPostById.comments -= 1; 
+            const updatedPost = await getPostById.save(); 
+            // delete the comment from the database 
+            const deletedCommentById = await Comment.deleteOne( {_id:getCommentById._id} );            
+            res.send(deletedCommentById); //send the delete result back to the client
+        }
+
     } catch (error) {
             console.error('Error deleting comment by ID:', error);
         res.status(400).send({message:error});

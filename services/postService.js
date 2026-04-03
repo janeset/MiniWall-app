@@ -29,12 +29,13 @@ const getAllPosts = async(req, res) => {
 const createPost = async(req, res) => {
     try {
         const postData = new Post({
-                user:req.body.user,
-                title:req.body.title,
-                text:req.body.text,
-                hashtag:req.body.hashtag,
-                location:req.body.location,
-                url:req.body.url
+            userId: req.body.userId,
+            user: req.body.user,
+            title: req.body.title,
+            text: req.body.text,
+            hashtag: req.body.hashtag,
+            location: req.body.location,
+            url: req.body.url
         })
 
         const postToSave = await postData.save();

@@ -2,13 +2,13 @@ const express = require('express');
 const router = express.Router();
 
 // Import the User model, which will be used to interact with the users collection in MongoDB
-const User = require('../Models/User');
+const User = require('../models/User');
 // Import the bcryptjs library, which will be used for hashing passwords and comparing hashed passwords during login
 const bcryptjs = require('bcryptjs');
 // Import the jsonwebtoken library, which will be used for generating and verifying JSON Web Tokens (JWT) for user authentication
 const jsonwebtoken = require('jsonwebtoken');
 // import the validation function for user registration and login from the validations/validation.js file
-const {registerValidation, loginValidation} = require('../Utilities/validation')
+const {registerValidation, loginValidation} = require('../utilities/validation')
 
 // Define a route for user registration
 router.post('/register', async (req, res) => {
