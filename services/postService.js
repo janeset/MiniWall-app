@@ -30,7 +30,7 @@ const createPost = async(req, res) => {
     try {
         const postData = new Post({
             userId: req.body.userId,
-            user: req.body.user,
+            username: req.body.username,
             title: req.body.title,
             text: req.body.text,
             hashtag: req.body.hashtag,
@@ -77,7 +77,7 @@ const updatePostById = async(req, res) => {
                     {_id:req.params.postId,}, //find the post by its ID
                     // update the post's fields with the new data from the request body using the $set operator
                     {$set: {
-                        user: req.body.user,
+                        username: req.body.username,
                         title: req.body.title,
                         text: req.body.text,
                         hashtag: req.body.hashtag,

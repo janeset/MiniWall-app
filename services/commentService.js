@@ -38,7 +38,7 @@ const createComment = async(req, res) => {
             const commentData = new Comment({
                 postId: updatedPost._id,
                 text: req.body.text,
-                user: req.body.user
+                username: req.body.username
             }); 
 
             //save the comment data to the database
@@ -85,7 +85,7 @@ const updateCommentById = async(req, res) => {
                     // update the comment's fields with the new data from the request body using the $set operator
                     {$set: {
                         text: req.body.text,
-                        user: req.body.user
+                        username: req.body.username
                     }});        
                 res.send(updatedCommentById); //send the update result back to the client
     } catch (error) {

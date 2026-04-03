@@ -33,6 +33,7 @@ const authUserRoute = require('./routes/auth');
 const postRoute = require('./routes/posts');
 const likeRoute = require('./routes/likes');
 const commentRoute = require('./routes/comments');
+const userRoute = require('./routes/users');
 
 // Use the films route for any requests to the /films endpoint
 app.use('/api/films', filmsRoute);
@@ -40,6 +41,7 @@ app.use('/api/user', authUserRoute);
 app.use('/api/posts', postRoute); 
 app.use('/api/likes', likeRoute); // Use the like route for any requests to the /posts endpoint (for liking a post)
 app.use('/api/comments', commentRoute); // Use the comment route for any requests to the /posts endpoint (for commenting on a post)
+app.use('/api/users', userRoute); // Use the user route for any requests to the /users endpoint (for user registration and login)
 
 // Start server in port 3000
 app.listen(PORT, () => {

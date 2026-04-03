@@ -1,3 +1,136 @@
 const User = require('../models/User');
+const bcryptjs = require('bcryptjs');
+const jsonwebtoken = require('jsonwebtoken');
 
 
+/*
+    Name    : createUser
+    Purpose :  - Use 'POST request' with the '/api/comments/:postId/new' endpoint, to create a new comment in the database, and send the created comment back to the client in JSON format.
+    returns  : - 200 OK status with the created comment in JSON format if the operation is successful
+               - 400 Bad Request status with an error message if there is an error during the creation process
+*/
+const createUser = async(req, res) => {
+    try {
+
+        // Check if user already exists in db (using email as key)
+        const userExists = await User.findOne({email: req.body.email});
+        if(userExists) {
+            return res.status(400).send({message: "User already exists."});
+        }
+        // Password encryption
+        const salt = await bcryptjs.genSalt();
+        const hashedPassword = await bcryptjs.hash(req.body.password, salt); 
+        // Create a new user instance using the data from the request body, including the hashed password
+        const user = new User({
+            username: req.body.username,
+            email: req.body.email,
+            password: hashedPassword
+        });
+        // Save the new user to the database and send the saved user as a response to the client
+        const savedUser = await user.save();
+        res.send(savedUser);
+        
+    } catch (error) {
+        console.error('Error Registering User:', error);
+        res.status(400).send({message:error});
+    }
+}
+
+
+
+
+/*
+    Name    : updateUserById
+    Purpose :  - Use 'PATCH request' with the '/api/users/:userId' endpoint, to update a user by their ID in the database, and send the updated user back to the client in JSON format.
+    returns  : - 200 OK status with the updated user in JSON format if the operation is successful
+               - 400 Bad Request status with an error message if there is an error during the update process
+*/
+const updateUserById = async(req, res) => {
+    try {
+        //TO-DO: get user by email from request body and validate user is not 
+        // using an email already associated with another user before updating the user document in the database
+        const updatedUserById = await User.updateOne(
+                    {_id:req.params.userId,}, //find the user by their ID
+                    // update the user's fields with the new data from the request body using the $set operator
+                    {$set: {
+                        username: req.body.username,
+                        email: req.body.email
+                    }});        
+        res.send(updatedUserById); //send the update result back to the client
+    } catch (error) {
+        console.error('Error updating user by ID:', error);
+        res.status(400).send({message:error});
+    }
+}
+
+
+
+/*
+    Name    : deleteUserById
+    Purpose :  - Use 'DELETE request' with the '/api/users/:userId' endpoint, to delete a user by their ID from the database, and send the deleted user back to the client in JSON format.
+    returns  : - 200 OK status with the deleted user in JSON format if the operation is successful
+               - 400 Bad Request status with an error message if there is an error during the delete process
+*/
+const deleteUserById = async(req, res) => {
+    try {
+        // retrieve the user by their ID from the database
+        const getUserById = await User.findById(req.params.userId);
+        if (!getUserById) {
+            return res.status(404).send({message:`User not found: ${req.params.userId}`});
+        }  
+
+        // delete the user from the database
+        const deletedUserById = await User.deleteOne({ _id: getUserById._id });
+        res.send(deletedUserById); // send the delete result back to the client
+    } catch (error) {
+        console.error('Error deleting user by ID:', error);
+        res.status(400).send({message:error});
+    }
+}
+
+
+/*
+    Name    : getAllRegisteredUsers
+    Purpose :  - Use 'GET request' with the '/api/users/getAll' endpoint, to retrieve all registered users from the database, and send the retrieved users back to the client in JSON format.
+    returns  : - 200 OK status with the retrieved users in JSON format if the operation is successful
+               - 400 Bad Request status with an error message if there is an error during the retrieval process
+*/
+const getAllRegisteredUsers = async(req, res) => {
+    try {
+        const users = await User.find(); // Retrieve all users from the database
+        res.status(200).json(users); // Send the retrieved users back to the client with a 200 OK status
+    } catch (error) {
+        console.error('Error retrieving registered users:', error);
+        res.status(400).send({message:error});
+    }
+}
+
+
+/*
+    Name    : getUserById
+    Purpose :  - Use 'GET request' with the '/api/users/:userId' endpoint, to retrieve a user by their ID from the database, and send the retrieved user back to the client in JSON format.
+    returns  : - 200 OK status with the retrieved user in JSON format if the operation is successful
+               - 400 Bad Request status with an error message if there is an error during the retrieval process
+*/
+const getUserById = async(req, res) => {
+    try {
+        const getUserById = await User.findById(req.params.userId);
+        res.send(getUserById);
+    } catch (error) {
+        console.error('Error getting user by ID:', error);
+        res.status(400).send({message:error});
+    }
+}
+
+
+
+
+
+// Export all methods so that it can be used in other parts of the application.
+module.exports = {
+    createUser,
+    updateUserById, 
+    deleteUserById,
+    getAllRegisteredUsers,
+    getUserById
+}

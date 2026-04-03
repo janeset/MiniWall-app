@@ -35,7 +35,7 @@ const likePost = async(req, res) => {
             //create a new like document in the database with the postId and user information
             const likeData = new Like({
                 postId: updatedPost._id,
-                user: req.body.user,
+                username: req.body.username,
                 email: req.body.email
             });
 
@@ -87,7 +87,7 @@ const unlikePost = async(req, res) => {
             //create a new like document in the database with the postId and user information
             const likeData = new Like({
                 postId: updatedPost._id,
-                user: updatedPost.user,
+                username: updatedPost.username,
                 email: getUserById.email
             });
 
