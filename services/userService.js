@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const bcryptjs = require('bcryptjs');
+const { get } = require('express/lib/response');
 const jsonwebtoken = require('jsonwebtoken');
 
 
@@ -28,9 +29,12 @@ const createUser = async(req, res) => {
         });
         // Save the new user to the database and send the saved user as a response to the client
         const savedUser = await user.save();
-        res.send(savedUser);
+        return res.send(savedUser);
         
     } catch (error) {
+        if (error.name === 'CastError' || error.name === 'ValidationError' || error.name === 'TypeError') {
+            return res.status(400).json({ message: `${error.name}: ${error.message}.  Invalid ${error.path}: ${error.value}` });
+        }  
         console.error('Error Registering User:', error);
         res.status(400).send({message:error});
     }
@@ -47,18 +51,34 @@ const createUser = async(req, res) => {
 */
 const updateUserById = async(req, res) => {
     try {
-        //TO-DO: get user by email from request body and validate user is not 
-        // using an email already associated with another user before updating the user document in the database
+        // validate user exists in the database 
+        const getUserById = await User.findById(req.params.userId);
+        if (!getUserById) {
+            return res.status(404).send({message:`User not found: ${req.params.userId}`});
+        } 
+
+        // validate user is not using an email already associated with another user before updating the user document in the database
+        const getUserByEmail = await User.findOne({email: req.body.email});
+        if (getUserByEmail && getUserById.email !== getUserByEmail.email) {
+            return res.status(400).send({message: "User with this email already exists."});
+        }        
+
+        // update the user's fields with the new data from the request body using the $set operator
         const updatedUserById = await User.updateOne(
-                    {_id:req.params.userId,}, //find the user by their ID
-                    // update the user's fields with the new data from the request body using the $set operator
-                    {$set: {
-                        username: req.body.username,
-                        email: req.body.email
-                    }});        
-        res.send(updatedUserById); //send the update result back to the client
-    } catch (error) {
-        console.error('Error updating user by ID:', error);
+                {_id:req.params.userId,}, //find the user by their ID
+                // update the user's fields with the new data from the request body using the $set operator
+                {$set: {
+                    username: req.body.username,
+                    email: req.body.email
+                }});        
+        //send the update result back to the client
+        res.send(updatedUserById); 
+
+    } catch (error) {        
+       if (error.name === 'CastError' || error.name === 'ValidationError' || error.name === 'TypeError') {
+            return res.status(400).json({ message: `${error.name}: ${error.message}. Invalid ${error.path}: ${error.value}` });
+        }    
+        console.error('Error updating user by ID:', error);  
         res.status(400).send({message:error});
     }
 }
@@ -82,8 +102,12 @@ const deleteUserById = async(req, res) => {
         // delete the user from the database
         const deletedUserById = await User.deleteOne({ _id: getUserById._id });
         res.send(deletedUserById); // send the delete result back to the client
+
     } catch (error) {
-        console.error('Error deleting user by ID:', error);
+        if (error.name === 'CastError' || error.name === 'ValidationError' || error.name === 'TypeError') {
+            return res.status(400).json({ message: `${error.name}: ${error.message}.  Invalid ${error.path}: ${error.value}` });
+        }  
+        console.error('Error deleting user by ID:', error);         
         res.status(400).send({message:error});
     }
 }
@@ -99,7 +123,11 @@ const getAllRegisteredUsers = async(req, res) => {
     try {
         const users = await User.find(); // Retrieve all users from the database
         res.status(200).json(users); // Send the retrieved users back to the client with a 200 OK status
+
     } catch (error) {
+        if (error.name === 'CastError' || error.name === 'ValidationError' || error.name === 'TypeError') {
+            return res.status(400).json({ message: `${error.name}: ${error.message}.  Invalid ${error.path}: ${error.value}` });
+        }  
         console.error('Error retrieving registered users:', error);
         res.status(400).send({message:error});
     }
@@ -115,10 +143,17 @@ const getAllRegisteredUsers = async(req, res) => {
 const getUserById = async(req, res) => {
     try {
         const getUserById = await User.findById(req.params.userId);
-        res.send(getUserById);
-    } catch (error) {
+        if (!getUserById) {
+            return res.status(404).send({message:`User not found. UserId: ${req.params.userId}`});
+        }
+        return res.send(getUserById);
+
+    } catch (error) {        
+        if (error.name === 'CastError' || error.name === 'ValidationError' || error.name === 'TypeError') {
+            return res.status(400).json({ message: `${error.name}: ${error.message}.  Invalid ${error.path}: ${error.value}` });
+        }   
         console.error('Error getting user by ID:', error);
-        res.status(400).send({message:error});
+        return res.status(400).send({message:error});
     }
 }
 

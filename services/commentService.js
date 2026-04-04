@@ -11,7 +11,11 @@ const getAllCommentsByPostId = async(req, res) => {
     try {
         const comments = await Comment.find({ postId: req.params.postId }); // Retrieve all comments for a specific post
         res.status(200).json(comments); // Send the retrieved comments back to the client with a 200 OK status
+    
     } catch (error) {
+        if (error.name === 'CastError' || error.name === 'ValidationError' || error.name === 'TypeError') {
+            return res.status(400).json({ message: `${error.name}: ${error.message}.  Invalid ${error.path}: ${error.value}` });
+        }   
         console.error('Error retrieving comments:', error);
         res.status(400).send({message:error});
     }
@@ -47,6 +51,9 @@ const createComment = async(req, res) => {
         }
         
     } catch (error) {
+        if (error.name === 'CastError' || error.name === 'ValidationError' || error.name === 'TypeError') {
+            return res.status(400).json({ message: `${error.name}: ${error.message}.  Invalid ${error.path}: ${error.value}` });
+        }  
         console.error('Error creating comment:', error);
         res.status(400).send({message:error});
     }
@@ -65,6 +72,9 @@ const getCommentById = async(req, res) => {
         const getCommentById = await Comment.findById(req.params.commentId);
         res.send(getCommentById);
     } catch (error) {
+        if (error.name === 'CastError' || error.name === 'ValidationError' || error.name === 'TypeError') {
+            return res.status(400).json({ message: `${error.name}: ${error.message}.  Invalid ${error.path}: ${error.value}` });
+        }  
         console.error('Error getting comment by ID:', error);
         res.status(400).send({message:error});
     }
@@ -88,7 +98,11 @@ const updateCommentById = async(req, res) => {
                         username: req.body.username
                     }});        
                 res.send(updatedCommentById); //send the update result back to the client
+
     } catch (error) {
+        if (error.name === 'CastError' || error.name === 'ValidationError' || error.name === 'TypeError') {
+            return res.status(400).json({ message: `${error.name}: ${error.message}.  Invalid ${error.path}: ${error.value}` });
+        }   
         console.error('Error updating comment by ID:', error);
         res.status(400).send({message:error});
     }
@@ -109,13 +123,15 @@ const deleteCommentById = async(req, res) => {
             return res.status(404).send({message:`Comment not found: ${req.params.commentId}`});
         }  
 
-        const getPostById = await Post.findById(req.params.postId); 
+        const getPostById = await Post.findById(getCommentById.postId); 
         if (!getPostById) {
-            return res.status(404).send({message:`Post not found: ${req.params.postId}`});
+            return res.status(404).send({message:`Post not found: ${getCommentById.postId}`});
 
         } else { 
-            // decrement the comments count by 1 and save the updated post back to the database
-            getPostById.comments -= 1; 
+            if (getPostById.comments > 0) {
+                // decrement the comments count by 1 and save the updated post back to the database
+                getPostById.comments -= 1; 
+            }
             const updatedPost = await getPostById.save(); 
             // delete the comment from the database 
             const deletedCommentById = await Comment.deleteOne( {_id:getCommentById._id} );            
@@ -123,7 +139,31 @@ const deleteCommentById = async(req, res) => {
         }
 
     } catch (error) {
-            console.error('Error deleting comment by ID:', error);
+        if (error.name === 'CastError' || error.name === 'ValidationError' || error.name === 'TypeError') {
+            return res.status(400).json({ message: `${error.name}: ${error.message}.  Invalid ${error.path}: ${error.value}` });
+        }  
+        console.error('Error deleting comment by ID:', error);
+        res.status(400).send({message:error});
+    }
+}
+
+
+/*
+    Name    : getAllComments
+    Purpose :  - Use 'GET request' with the '/api/comments/getAll' endpoint, to retrieve all comments from the database.
+    returns  : - 200 OK status with the retrieved comments in JSON format if the operation is successful
+               - 400 Bad Request status with an error message if there is an error during the retrieval process
+*/
+const getAllComments = async(req, res) => {
+    try {
+        const comments = await Comment.find(); // Retrieve all comments 
+        res.status(200).json(comments); // Send the retrieved comments back to the client with a 200 OK status
+    
+    } catch (error) {
+        if (error.name === 'CastError' || error.name === 'ValidationError' || error.name === 'TypeError') {
+            return res.status(400).json({ message: `Get all comments error: ${error.message}.  Invalid ${error.path}: ${error.value}` });
+        }   
+        console.error('Error retrieving comments:', error);
         res.status(400).send({message:error});
     }
 }
@@ -134,6 +174,7 @@ module.exports = {
     createComment,
     getCommentById, 
     updateCommentById,
-    deleteCommentById
+    deleteCommentById,
+    getAllComments
 }
     

@@ -10,9 +10,12 @@ const Post = require('../models/Post');
 */
 const getAllPosts = async(req, res) => {
     try {
-        const posts = await Post.find(); // Retrieve all posts from the database
+        const posts = await Post.find().sort({ likes: -1 }); // Retrieve all posts from the database
         res.status(200).json(posts); // Send the retrieved posts back to the client with a 200 OK status
     } catch (error) {
+        if (error.name === 'CastError' || error.name === 'ValidationError' || error.name === 'TypeError') {
+            return res.status(400).json({ message: `${error.name}: ${error.message}.  Invalid ${error.path}: ${error.value}` });
+        }  
         console.error('Error retrieving posts:', error);        
         res.status(400).send({message:error});
     }
@@ -42,6 +45,9 @@ const createPost = async(req, res) => {
         res.send(postToSave);
 
     } catch (error) {
+        if (error.name === 'CastError' || error.name === 'ValidationError' || error.name === 'TypeError') {
+            return res.status(400).json({ message: `${error.name}: ${error.message}.  Invalid ${error.path}: ${error.value}` });
+        }  
         console.error('Error creating post:', error);
         res.status(400).send({message:error});
     }
@@ -58,7 +64,11 @@ const getPostById = async(req, res) => {
     try {
         const getPostById = await Post.findById(req.params.postId);
         res.send(getPostById);
+
     } catch (error) {
+        if (error.name === 'CastError' || error.name === 'ValidationError' || error.name === 'TypeError') {
+            return res.status(400).json({ message: `${error.name}: ${error.message}.  Invalid ${error.path}: ${error.value}` });
+        }  
         console.error('Error getting post by ID:', error);
         res.status(400).send({message:error});
     }
@@ -86,7 +96,11 @@ const updatePostById = async(req, res) => {
                     }}
                 );
                 res.send(updatedPostById); //send the update result back to the client
+
     } catch (error) {
+        if (error.name === 'CastError') {
+            return res.status(400).json({ error_message: `Invalid ${error.path}: ${error.value}` });
+        } 
         console.error('Error updating post by ID:', error);
         res.status(400).send({message:error});
     }
@@ -105,8 +119,12 @@ const deletePostById = async(req, res) => {
                     {_id:req.params.postId} //find the post by its ID
                 );
                 res.send(deletedPostById); //send the delete result back to the client
+
     } catch (error) {
-            console.error('Error deleting post by ID:', error);
+        if (error.name === 'CastError' || error.name === 'ValidationError' || error.name === 'TypeError') {
+            return res.status(400).json({ message: `${error.name}: ${error.message}.  Invalid ${error.path}: ${error.value}` });
+        }   
+        console.error('Error deleting post by ID:', error);
         res.status(400).send({message:error});
     }
 }

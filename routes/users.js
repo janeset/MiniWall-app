@@ -1,10 +1,7 @@
 const express = require('express');
 const router = express.Router();
-
 const userService = require('../services/userService');
 
-
-// ----------------------------------------------------------------------
 
 // Define the routes for the posts endpoints and associate them with the corresponding methods from the userService.js file
 
@@ -23,11 +20,6 @@ router.get('/getAll', userService.getAllRegisteredUsers);
 // find a user by their ID, using a GET request to the '/api/users/:userId' endpoint
 router.get('/:userId', userService.getUserById); 
 
-
-
-
-
-// ---------------------------------------------------------------------
 
 // export the router to be used in app.js
 module.exports = router;
