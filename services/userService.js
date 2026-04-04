@@ -1,7 +1,7 @@
 const User = require('../models/User');
 const bcryptjs = require('bcryptjs');
-const { get } = require('express/lib/response');
 const jsonwebtoken = require('jsonwebtoken');
+const validation = require('../utilities/validation');
 
 
 
@@ -13,6 +13,13 @@ const jsonwebtoken = require('jsonwebtoken');
 */
 const createUser = async(req, res) => {
     try {
+
+        // input validation
+        const {error} = validation.registerValidation(req.body)
+        if (error){
+            //send a response with status code 400 (Bad Request) and error details
+            return res.status(400).send({validationError: error['details'][0]['message']});  
+        } 
 
         // Check if user already exists in db (using email as key)
         const userExists = await User.findOne({email: req.body.email});
@@ -51,6 +58,14 @@ const createUser = async(req, res) => {
 */
 const loginUser = async(req, res) => {
     try {
+
+        // input validation
+        const {error} = validation.loginValidation(req.body)
+        if (error){
+            //send a response with status code 400 (Bad Request) and error details
+            return res.status(400).send({validationError: error['details'][0]['message']});  
+        } 
+        
         // Check if user exists in db (using email as key)
         const user = await User.findOne({email: req.body.email});
         if(!user) {
@@ -86,6 +101,14 @@ const loginUser = async(req, res) => {
 */
 const updateUserById = async(req, res) => {
     try {
+
+        // input validation
+        const {error} = validation.mongoIdValidation(req.params)
+        if (error){
+            //send a response with status code 400 (Bad Request) and error details
+            return res.status(400).send({validationError: error['details'][0]['message']});  
+        } 
+
         // validate user exists in the database 
         const getUserById = await User.findById(req.params.userId);
         if (!getUserById) {
@@ -128,6 +151,13 @@ const updateUserById = async(req, res) => {
 */
 const deleteUserById = async(req, res) => {
     try {
+        // input validation
+        const {error} = validation.mongoIdValidation(req.params)
+        if (error){
+            //send a response with status code 400 (Bad Request) and error details
+            return res.status(400).send({validationError: error['details'][0]['message']});  
+        } 
+
         // retrieve the user by their ID from the database
         const getUserById = await User.findById(req.params.userId);
         if (!getUserById) {
@@ -179,6 +209,12 @@ const getAllRegisteredUsers = async(req, res) => {
 */
 const getUserById = async(req, res) => {
     try {
+        // input validation
+        const {error} = validation.mongoIdValidation(req.params)
+        if (error){
+            //send a response with status code 400 (Bad Request) and error details
+            return res.status(400).send({validationError: error['details'][0]['message']});  
+        } 
         const getUserById = await User.findById(req.params.userId);
         if (!getUserById) {
             return res.status(404).send({message:`User not found. UserId: ${req.params.userId}`});

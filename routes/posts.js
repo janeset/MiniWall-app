@@ -9,6 +9,7 @@ const likeService = require('../services/likeService');
 const postSearchService = require('../services/postSearchService');
 const validation = require('../utilities/validation');
 
+
 // Define the routes for the posts endpoints and associate them with the corresponding methods from the postService.js file
 
 // Use the getAllPosts function to handle GET requests to the /api/posts/getAll endpoint
@@ -40,7 +41,6 @@ router.post('/:postId/unlike', validation.tokenValidation, likeService.unlikePos
 
 // Use the getAllLikesByPostId function to handle GET requests to the /api/posts/:postId/likes endpoint
 router.get('/:postId/likes', validation.tokenValidation, likeService.getAllLikesByPostId);
-
 
 // Use searchPostByDate function to handle GET requests to the '/api/posts/search/dates' endpoint
 router.get('/search/dates', validation.tokenValidation, postSearchService.searchPostsByDateRange);

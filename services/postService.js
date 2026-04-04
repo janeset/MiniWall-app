@@ -1,6 +1,7 @@
 
 const Post = require('../models/Post');
 const Comment = require('../models/Comment');
+const validation = require('../utilities/validation');
 
 
 
@@ -33,6 +34,14 @@ const getAllPosts = async(req, res) => {
 */
 const createPost = async(req, res) => {
     try {
+
+        // input validation
+        const {error} = validation.createPostValidation(req.body)
+        if (error){
+            //send a response with status code 400 (Bad Request) and error details
+            return res.status(400).send({validationError: error['details'][0]['message']});  
+        } 
+
         const postData = new Post({
             userId: req.body.userId,
             username: req.body.username,
@@ -65,6 +74,12 @@ const createPost = async(req, res) => {
 */
 const getPostById = async(req, res) => {
     try {
+        // input validation
+        const {error} = validation.mongoIdValidation(req.params)
+        if (error){
+            //send a response with status code 400 (Bad Request) and error details
+            return res.status(400).send({validationError: error['details'][0]['message']});  
+        } 
         const getPostById = await Post.findById(req.params.postId);
         res.send(getPostById);
 
@@ -87,6 +102,14 @@ const getPostById = async(req, res) => {
 */
 const updatePostById = async(req, res) => {
     try {
+
+        // input validation
+        const {error} = validation.updatePostValidation(req.body)
+        if (error){
+            //send a response with status code 400 (Bad Request) and error details
+            return res.status(400).send({validationError: error['details'][0]['message']});  
+        } 
+
         const updatedPostById = await Post.updateOne(
                     {_id:req.params.postId,}, //find the post by its ID
                     // update the post's fields with the new data from the request body using the $set operator
@@ -120,6 +143,12 @@ const updatePostById = async(req, res) => {
 */
 const deletePostById = async(req, res) => {
     try {
+        // input validation
+        const {error} = validation.mongoIdValidation(req.params)
+        if (error){
+            //send a response with status code 400 (Bad Request) and error details
+            return res.status(400).send({validationError: error['details'][0]['message']});  
+        } 
         const deletedPostById = await Post.deleteOne( // delete the post from the database using the deleteOne method 
                     {_id:req.params.postId} //find the post by its ID
                 );
@@ -144,6 +173,14 @@ const deletePostById = async(req, res) => {
 */
 const getPostwithCommentsById = async(req, res) => {
     try {
+
+        // input validation
+        const {error} = validation.mongoIdValidation(req.params)
+        if (error){
+            //send a response with status code 400 (Bad Request) and error details
+            return res.status(400).send({validationError: error['details'][0]['message']});  
+        } 
+
         const getPostById = await Post.findById(req.params.postId).lean(); //  lean() gets plain JS objinstead of a Mongoose document
         if (!getPostById) {
             return res.status(404).send({message:`Post not found: ${req.params.postId}`});

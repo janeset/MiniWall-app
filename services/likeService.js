@@ -1,6 +1,7 @@
 const Post = require('../models/Post');
 const Like = require('../models/Like');
 const User = require('../models/User');
+const validation = require('../utilities/validation');
 
 
 
@@ -13,6 +14,12 @@ const User = require('../models/User');
 */
 const likePost = async(req, res) => {
     try{
+        // input validation
+        const {error} = validation.likeValidation(req.body)
+        if (error){
+            //send a response with status code 400 (Bad Request) and error details
+            return res.status(400).send({validationError: error['details'][0]['message']});  
+        } 
         const getPostById = await Post.findById(req.params.postId);
         if (!getPostById) {
             return res.status(404).send({message:`Post not found: ${req.params.postId}`});
@@ -70,6 +77,13 @@ const likePost = async(req, res) => {
 */
 const unlikePost = async(req, res) => {
     try{
+        // input validation
+        const {error} = validation.likeValidation(req.body)
+        if (error){
+            //send a response with status code 400 (Bad Request) and error details
+            return res.status(400).send({validationError: error['details'][0]['message']});  
+        } 
+
         const getPostById = await Post.findById(req.params.postId);
         if (!getPostById) {
             return res.status(404).send({message:`Post not found: ${req.params.postId}`});
@@ -123,6 +137,13 @@ const unlikePost = async(req, res) => {
 */
 const getAllLikesByPostId = async(req, res) => {
     try {
+        // input validation
+        const {error} = validation.mongoIdValidation(req.params)
+        if (error){
+            //send a response with status code 400 (Bad Request) and error details
+            return res.status(400).send({validationError: error['details'][0]['message']});  
+        } 
+
         const likes = await Like.find({ postId: req.params.postId }); // Retrieve all likes for a specific post
         res.status(200).json(likes); // Send the retrieved likes back to the client with a 200 OK status
 
@@ -145,6 +166,13 @@ const getAllLikesByPostId = async(req, res) => {
 */
 const getLikeById = async(req, res) => {
     try {
+        // input validation
+        const {error} = validation.mongoIdValidation(req.params)
+        if (error){
+            //send a response with status code 400 (Bad Request) and error details
+            return res.status(400).send({validationError: error['details'][0]['message']});  
+        } 
+
         const getLikeById = await Like.findById(req.params.likeId);
         res.send(getLikeById);
 

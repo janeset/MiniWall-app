@@ -1,4 +1,5 @@
 const Post = require('../models/Post');
+const validation = require('../utilities/validation');
 
 /*
     Name    : searchPostsByTitle
@@ -9,7 +10,15 @@ const Post = require('../models/Post');
 */
 const searchPostsByTitle = async (req, res) => {
     try {
+        // input validation
+        const {error} = validation.inputSearchValidation(req.params)
+        if (error){
+            //send a response with status code 400 (Bad Request) and error details
+            return res.status(400).send({validationError: error['details'][0]['message']});  
+        }
+        
         const keywords = req.params.keywords;
+        // Validate that the keywords parameter is not empty
         if (!keywords) {
             return res.status(400).json({ message: "Keywords can not be empty." });
         }
@@ -49,6 +58,12 @@ const searchPostsByTitle = async (req, res) => {
  */
 const searchPostsByUsername = async (req, res) => {
     try {
+        // input validation
+        const {error} = validation.inputSearchValidation(req.params)
+        if (error){
+            //send a response with status code 400 (Bad Request) and error details
+            return res.status(400).send({validationError: error['details'][0]['message']});  
+        } 
 
         // Validate that the username parameter is not empty
         const username = req.params.username;
@@ -92,6 +107,12 @@ const searchPostsByUsername = async (req, res) => {
 */
 const searchPostsByDateRange = async (req, res) => {
     try {
+        // input validation
+        const {error} = validation.dateSearchValidation(req.body)
+        if (error){
+            //send a response with status code 400 (Bad Request) and error details
+            return res.status(400).send({validationError: error['details'][0]['message']});  
+        }
 
         // Convert the startDate and endDate query parameters to Date objects        
         const startDate = req.body.startDate ? new Date(req.body.startDate) : null;

@@ -1,6 +1,7 @@
 const Comment = require('../models/Comment');
 const Post = require('../models/Post');
 const User = require('../models/User');
+const validation = require('../utilities/validation');
 
 
 
@@ -12,6 +13,12 @@ const User = require('../models/User');
 */
 const getAllCommentsByPostId = async(req, res) => {
     try {
+        // input validation
+        const {error} = validation.mongoIdValidation(req.params)
+        if (error){
+            //send a response with status code 400 (Bad Request) and error details
+            return res.status(400).send({validationError: error['details'][0]['message']});  
+        } 
         const comments = await Comment.find({ postId: req.params.postId }); // Retrieve all comments for a specific post
         res.status(200).json(comments); // Send the retrieved comments back to the client with a 200 OK status
     
@@ -34,6 +41,13 @@ const getAllCommentsByPostId = async(req, res) => {
 */
 const createComment = async(req, res) => {
     try {
+        // input validation
+        const {error} = validation.mongoIdValidation(req.params)
+        if (error){
+            //send a response with status code 400 (Bad Request) and error details
+            return res.status(400).send({validationError: error['details'][0]['message']});  
+        } 
+
         const getPostById = await Post.findById(req.params.postId); 
         if (!getPostById) {
             return res.status(404).send({message:`Post not found: ${req.params.postId}`});
@@ -78,6 +92,13 @@ const createComment = async(req, res) => {
 */
 const getCommentById = async(req, res) => {
     try {
+        // input validation
+        const {error} = validation.mongoIdValidation(req.params)
+        if (error){
+            //send a response with status code 400 (Bad Request) and error details
+            return res.status(400).send({validationError: error['details'][0]['message']});  
+        } 
+
         const getCommentById = await Comment.findById(req.params.commentId);
         res.send(getCommentById);
     } catch (error) {
@@ -99,6 +120,13 @@ const getCommentById = async(req, res) => {
 */
 const updateCommentById = async(req, res) => {
     try {
+        // input validation
+        const {error} = validation.mongoIdValidation(req.params)
+        if (error){
+            //send a response with status code 400 (Bad Request) and error details
+            return res.status(400).send({validationError: error['details'][0]['message']});  
+        } 
+
         const updatedCommentById = await Comment.updateOne(
                     {_id:req.params.commentId,}, //find the comment by its ID
                     // update the comment's fields with the new data from the request body using the $set operator
@@ -127,6 +155,13 @@ const updateCommentById = async(req, res) => {
 */
 const deleteCommentById = async(req, res) => {
     try {
+        // input validation
+        const {error} = validation.mongoIdValidation(req.params)
+        if (error){
+            //send a response with status code 400 (Bad Request) and error details
+            return res.status(400).send({validationError: error['details'][0]['message']});  
+        } 
+
         // retrieve the comment and post by their IDs from the database
         const getCommentById = await Comment.findById(req.params.commentId);
         if (!getCommentById) {

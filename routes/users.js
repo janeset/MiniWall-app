@@ -10,7 +10,7 @@ const validation = require('../utilities/validation');
 router.post('/register', userService.createUser); 
 
 // (Login) Authenticate an user, using a POST request to the '/api/users/login' endpoint
-router.post('/login', validation.loginValidation, userService.loginUser);
+router.post('/login', userService.loginUser);
 
 // Update an user by their ID, using a PUT request to the '/api/users/:userId' endpoint
 router.put('/:userId', validation.tokenValidation, userService.updateUserById); 
