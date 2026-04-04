@@ -4,6 +4,7 @@ const { get } = require('express/lib/response');
 const jsonwebtoken = require('jsonwebtoken');
 
 
+
 /*
     Name    : createUser
     Purpose :  - Use 'POST request' with the '/api/comments/:postId/new' endpoint, to create a new comment in the database, and send the created comment back to the client in JSON format.
@@ -39,7 +40,6 @@ const createUser = async(req, res) => {
         res.status(400).send({message:error});
     }
 }
-
 
 
 
@@ -113,6 +113,7 @@ const deleteUserById = async(req, res) => {
 }
 
 
+
 /*
     Name    : getAllRegisteredUsers
     Purpose :  - Use 'GET request' with the '/api/users/getAll' endpoint, to retrieve all registered users from the database, and send the retrieved users back to the client in JSON format.
@@ -132,6 +133,7 @@ const getAllRegisteredUsers = async(req, res) => {
         res.status(400).send({message:error});
     }
 }
+
 
 
 /*
@@ -156,7 +158,6 @@ const getUserById = async(req, res) => {
         return res.status(400).send({message:error});
     }
 }
-
 
 
 

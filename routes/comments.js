@@ -7,6 +7,9 @@ const commentService = require('../services/commentService');
 // Use the getAllComments function to handle GET requests to the '/api/comments/getAll' endpoint
 router.get('/getAll', commentService.getAllComments); 
 
+// user gets all comments for a specific post using the getAllCommentsByPostId function to handle GET requests to the '/api/comments/:postId/comments' endpoint
+router.get('/:postId/comments', commentService.getAllCommentsByPostId);
+
 // Use the getCommentById function to handle GET requests to the '/api/comments/:commentId' endpoint
 router.get('/:commentId', commentService.getCommentById); 
 

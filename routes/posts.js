@@ -6,6 +6,7 @@ const router = express.Router();
 const postService = require('../services/postService'); 
 const commentService = require('../services/commentService');
 const likeService = require('../services/likeService');
+const postSearchService = require('../services/postSearchService');
 
 // Define the routes for the posts endpoints and associate them with the corresponding methods from the postService.js file
 
@@ -24,8 +25,8 @@ router.patch('/:postId', postService.updatePostById);
 // Use the deletePostById function to handle DELETE requests to the /api/posts/:postId endpoint
 router.delete('/:postId', postService.deletePostById); 
 
-// Use the getAllCommentsByPostId function to handle GET requests to the /api/posts/:postId/comments endpoint
-router.get('/:postId/comments', commentService.getAllCommentsByPostId); 
+// Use the getPostwithCommentsById function to handle GET requests to the /api/posts/:postId/comments endpoint
+router.get('/:postId/comments', postService.getPostwithCommentsById); 
 
 // create a new comment for a specific post using the createComment function to handle POST requests to the '/api/posts/:postId/comments/new' endpoint
 router.post('/:postId/comments/new', commentService.createComment); 
@@ -38,6 +39,16 @@ router.post('/:postId/unlike', likeService.unlikePost);
 
 // Use the getAllLikesByPostId function to handle GET requests to the /api/posts/:postId/likes endpoint
 router.get('/:postId/likes', likeService.getAllLikesByPostId);
+
+
+// Use searchPostByDate function to handle GET requests to the '/api/posts/search/dates' endpoint
+router.get('/search/dates', postSearchService.searchPostsByDateRange);
+
+// Use searchPostByUsername function to handle GET requests to the '/api/posts/search/:username' endpoint
+router.get('/search/:username', postSearchService.searchPostsByUsername);
+
+// Use searchPostByTitle function to handle GET requests to the '/api/posts/search/title/:keywords' endpoint
+router.get('/search/title/:keywords', postSearchService.searchPostsByTitle);
 
 
 // export the router to be used in app.js

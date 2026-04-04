@@ -3,6 +3,7 @@ const Like = require('../models/Like');
 const User = require('../models/User');
 
 
+
 /*
     Name    : likePost
     Purpose :  - Use 'POST request' with the '/api/likes/:postId/like' endpoint, to create a new like in the database, 
@@ -113,6 +114,7 @@ const unlikePost = async(req, res) => {
 }
 
 
+
 /*
     Name    : getAllLikesByPostId
     Purpose :  - Use 'GET request' with the '/api/posts/:postId/likes' endpoint, to retrieve all likes for a specific post from the database, and send the retrieved likes back to the client in JSON format.
@@ -156,6 +158,7 @@ const getLikeById = async(req, res) => {
 }
 
 
+
 /*
     Name    : getAllLikes
     Purpose :  - Use 'GET request' with the '/api/likes/getAll' endpoint, to retrieve all likes from the database, and send the retrieved likes back to the client in JSON format.
@@ -174,6 +177,8 @@ const getAllLikes = async(req, res) => {
         res.status(400).send({message:error});
     }
 }
+
+
 
 
 // Export all methods so that it can be used in other parts of the application.

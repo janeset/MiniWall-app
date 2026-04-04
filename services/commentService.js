@@ -1,9 +1,12 @@
 const Comment = require('../models/Comment');
 const Post = require('../models/Post');
+const User = require('../models/User');
+
+
 
 /*
     Name    : getAllCommentsByPostId
-    Purpose :  - Use 'GET request' with the '/api/posts/:postId/comments' endpoint, to retrieve all comments for a specific post from the database, and send the retrieved comments back to the client in JSON format.
+    Purpose :  - Use 'GET request' with the '/api/comments/:postId/comments' endpoint, to retrieve all comments for a specific post from the database, and send the retrieved comments back to the client in JSON format.
     returns  : - 200 OK status with the retrieved comments in JSON format if the operation is successful
                - 400 Bad Request status with an error message if there is an error during the retrieval process
 */
@@ -34,6 +37,12 @@ const createComment = async(req, res) => {
         const getPostById = await Post.findById(req.params.postId); 
         if (!getPostById) {
             return res.status(404).send({message:`Post not found: ${req.params.postId}`});
+        }
+        // validte user doesnt comment on own post
+        const postOwner = await User.findById(getPostById.userId);
+        if (postOwner && postOwner.username === req.body.username) {
+            return res.status(400).send({message:`User cannot comment on their own post. PostOwner: ${postOwner.username}, CommentOwner: ${req.body.username}`});
+        
         } else { 
             getPostById.comments += 1; //increment the comments count by 1
             const updatedPost = await getPostById.save(); //save the updated post back to the database
@@ -109,6 +118,7 @@ const updateCommentById = async(req, res) => {
 }
 
 
+
 /*
     Name    : deleteCommentById
     Purpose :  - Use 'DELETE request' with the '/api/comments/:commentId' endpoint, to delete a comment by its ID from the database, and send the deleted comment back to the client in JSON format.
@@ -148,6 +158,7 @@ const deleteCommentById = async(req, res) => {
 }
 
 
+
 /*
     Name    : getAllComments
     Purpose :  - Use 'GET request' with the '/api/comments/getAll' endpoint, to retrieve all comments from the database.
@@ -167,6 +178,9 @@ const getAllComments = async(req, res) => {
         res.status(400).send({message:error});
     }
 }
+
+
+
 
 // Export all methods so that it can be used in other parts of the application.
 module.exports = {

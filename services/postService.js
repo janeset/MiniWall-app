@@ -1,5 +1,7 @@
 
 const Post = require('../models/Post');
+const Comment = require('../models/Comment');
+
 
 
 /*
@@ -54,6 +56,7 @@ const createPost = async(req, res) => {
 }
 
 
+
 /*
     Name    : getPostById
     Purpose :  - Use 'GET request' with the '/api/posts/:postId' endpoint, to retrieve a post by its ID from the database, and send the retrieved post back to the client in JSON format.
@@ -73,6 +76,7 @@ const getPostById = async(req, res) => {
         res.status(400).send({message:error});
     }
 }
+
 
 
 /*
@@ -98,13 +102,14 @@ const updatePostById = async(req, res) => {
                 res.send(updatedPostById); //send the update result back to the client
 
     } catch (error) {
-        if (error.name === 'CastError') {
-            return res.status(400).json({ error_message: `Invalid ${error.path}: ${error.value}` });
+        if (error.name === 'CastError' || error.name === 'ValidationError' || error.name === 'TypeError') {
+            return res.status(400).json({ message: `${error.name}: ${error.message}.  Invalid ${error.path}: ${error.value}` });
         } 
         console.error('Error updating post by ID:', error);
         res.status(400).send({message:error});
     }
 }
+
 
 
 /*
@@ -130,13 +135,45 @@ const deletePostById = async(req, res) => {
 }
 
 
+
+/*
+    Name    : getPostwithCommentsById
+    Purpose :  - Use 'GET request' with the '/api/posts/:postId/comments' endpoint, to retrieve a post by its ID from the database.
+    returns  : - 200 OK status with the retrieved post in JSON format if the operation is successful
+               - 400 Bad Request status with an error message if there is an error during the retrieval process
+*/
+const getPostwithCommentsById = async(req, res) => {
+    try {
+        const getPostById = await Post.findById(req.params.postId).lean(); //  lean() gets plain JS objinstead of a Mongoose document
+        if (!getPostById) {
+            return res.status(404).send({message:`Post not found: ${req.params.postId}`});
+        }  
+
+        // get all comments and build a post object with the comments field populated with the actual comments, sorted by date (Newest at top).
+        const comments = await Comment.find({ postId: req.params.postId }).sort({ date: -1 }).lean();        
+        const postWithComments = { ...getPostById, comments };
+        res.send(postWithComments); // send the post with comments back to the client
+
+    } catch (error) {
+        if (error.name === 'CastError' || error.name === 'ValidationError' || error.name === 'TypeError') {
+            return res.status(400).json({ message: `${error.name}: ${error.message}.  Invalid ${error.path}: ${error.value}` });
+        }   
+        console.error('Error getting post with comments by ID:', error);
+        res.status(400).send({message:error});
+    }
+}
+
+
+
+
 // Export all methods so that it can be used in other parts of the application.
 module.exports = {
     getAllPosts,
     createPost,
     getPostById,
     updatePostById,
-    deletePostById
-}
+    deletePostById,
+    getPostwithCommentsById
+};
 
 
