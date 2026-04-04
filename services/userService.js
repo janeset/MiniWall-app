@@ -44,6 +44,41 @@ const createUser = async(req, res) => {
 
 
 /*
+    Name    : loginUser
+    Purpose :  - Use 'POST request' with the '/api/users/login' endpoint, to authenticate a user and generate a JWT token, and send the token back to the client in JSON format.
+    returns  : - 200 OK status with the generated JWT token in JSON format if the operation is successful
+               - 400 Bad Request status with an error message if there is an error during the login process
+*/
+const loginUser = async(req, res) => {
+    try {
+        // Check if user exists in db (using email as key)
+        const user = await User.findOne({email: req.body.email});
+        if(!user) {
+            return res.status(400).send({message: "User does not exist."});
+        }
+        // Check if password is correct
+        const validPassword = await bcryptjs.compare(req.body.password, user.password);
+        if (!validPassword) {
+            return res.status(400).send({message: "Invalid password."});
+        }
+        // Create and assign a token
+        const token = jsonwebtoken.sign({_id: user._id}, process.env.TOKEN_SECRET);
+        res.header('auth-token', token)
+            .send({message: "Login successful.", "username": user.username, "token": token});
+                
+
+    } catch (error) {
+        if (error.name === 'CastError' || error.name === 'ValidationError' || error.name === 'TypeError') {
+            return res.status(400).json({ message: `${error.name}: ${error.message}.  Invalid ${error.path}: ${error.value}` });
+        }  
+        console.error('Error logging in user:', error);
+        res.status(400).send({message:error});
+    }
+}
+
+
+
+/*
     Name    : updateUserById
     Purpose :  - Use 'PATCH request' with the '/api/users/:userId' endpoint, to update a user by their ID in the database, and send the updated user back to the client in JSON format.
     returns  : - 200 OK status with the updated user in JSON format if the operation is successful
@@ -165,6 +200,7 @@ const getUserById = async(req, res) => {
 // Export all methods so that it can be used in other parts of the application.
 module.exports = {
     createUser,
+    loginUser,
     updateUserById, 
     deleteUserById,
     getAllRegisteredUsers,

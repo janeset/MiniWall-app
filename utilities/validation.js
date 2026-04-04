@@ -1,4 +1,7 @@
 const joi = require('joi');
+const jsonwebtoken = require('jsonwebtoken');
+// Import configuration settings
+const config = require('../config/config'); 
 
 // Define a function to validate user registration data using Joi, which is a popular validation library for JavaScript
 const registerValidation = (data) => {
@@ -47,9 +50,45 @@ const loginValidation = (data) => {
 }
 
 
-// Export the registerValidation function so it can be used in other parts of the application, such as in routes or controllers
-module.exports.registerValidation = registerValidation; 
+const tokenValidation = (req, res, next) => {
 
+    try {
+        // get the token from the 'auth-token' header
+        const token = req.header('auth-token');
+        const tokenSecret = config.TOKEN_SECRET;
+        // print header nd print token and token secret for debugging purposes
+        console.log('header', req.headers);
+        console.log("Received token from request header:", token);
 
-// Export the loginValidation function so it can be used in other parts of the application, such as in routes or controllers
-module.exports.loginValidation = loginValidation; 
+        // validate token exists in the request header
+        if (!token) {
+            return res.status(401).send({message: "Access denied. No token provided."});
+        }
+        // verify the jsonwebtoken using the token secret
+        const verified = jsonwebtoken.verify(token, tokenSecret);
+        if (verified) { 
+            console.log("Token verification successful. Verified token payload:", verified);        
+            req.user = verified;
+            next();}
+        else {
+            res.status(401).send({message: "Invalid token. Token verification failed."});
+        }
+
+    } catch (error) {
+        if (error.name === 'CastError' || error.name === 'ValidationError' || error.name === 'TypeError') {
+            return res.status(400).json({ message: `${error.name}: ${error.message}.  Invalid ${error.path}: ${error.value}` });
+        } 
+        console.error('Error Validating jsonwebtoken:', error);
+        res.status(400).send({message:error});
+    }
+
+}       
+       
+
+// Export all methods so that it can be used in other parts of the application.
+module.exports = {
+    registerValidation, 
+    loginValidation,
+    tokenValidation
+};
+
