@@ -14,6 +14,7 @@ const validation = require('../utilities/validation');
 
 // Use the getAllPosts function to handle GET requests to the /api/posts/getAll endpoint
 router.get('/getAll', validation.tokenValidation, postService.getAllPosts);
+router.get('/getAll2', postService.getAllPosts);
 
 // Use the createPost function to handle POST requests to the /api/posts/new endpoint
 router.post('/new', validation.tokenValidation, postService.createPost); 

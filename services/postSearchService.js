@@ -11,22 +11,25 @@ const validation = require('../utilities/validation');
 const searchPostsByTitle = async (req, res) => {
     try {
         // input validation
-        const {error} = validation.inputSearchValidation(req.params)
+        const {error} = validation.titleSearchValidation(req.params)
         if (error){
             //send a response with status code 400 (Bad Request) and error details
             return res.status(400).send({validationError: error['details'][0]['message']});  
         }
-        
+
         const keywords = req.params.keywords;
         // Validate that the keywords parameter is not empty
         if (!keywords) {
             return res.status(400).json({ message: "Keywords can not be empty." });
         }
-
+        const allWordsPattern = keywords.split(' ')
+                                .filter(word => word)
+                                .map(word => `(?=.*${word})`)
+                                .join('');
         // Perform a case-insensitive search for posts with a title that contains the keyword (case-insensitive) and sort by date in descending order (newest first)
         const postsByTitleKeyword = await Post
                                             .find({ title: { 
-                                                $regex: keywords,  // Use a regular expression to search for the keyword in the title
+                                                $regex: allWordsPattern,  // Use a regular expression to search for the keyword in the title
                                                 $options: 'i' } }) // $options: 'i' makes the search case-insensitive
                                             .sort({ date: -1 }); 
 
@@ -59,7 +62,8 @@ const searchPostsByTitle = async (req, res) => {
 const searchPostsByUsername = async (req, res) => {
     try {
         // input validation
-        const {error} = validation.inputSearchValidation(req.params)
+        console.log("Username search input validation result:", req.params);
+        const {error} = validation.usernameSearchValidation(req.params)
         if (error){
             //send a response with status code 400 (Bad Request) and error details
             return res.status(400).send({validationError: error['details'][0]['message']});  
@@ -109,6 +113,7 @@ const searchPostsByDateRange = async (req, res) => {
     try {
         // input validation
         const {error} = validation.dateSearchValidation(req.body)
+        console.log("Date search validation result:", error);
         if (error){
             //send a response with status code 400 (Bad Request) and error details
             return res.status(400).send({validationError: error['details'][0]['message']});  

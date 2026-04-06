@@ -14,7 +14,7 @@ const validation = require('../utilities/validation');
 const getAllCommentsByPostId = async(req, res) => {
     try {
         // input validation
-        const {error} = validation.mongoIdValidation(req.params)
+        const {error} = validation.postIdValidation(req.params)
         if (error){
             //send a response with status code 400 (Bad Request) and error details
             return res.status(400).send({validationError: error['details'][0]['message']});  
@@ -42,7 +42,7 @@ const getAllCommentsByPostId = async(req, res) => {
 const createComment = async(req, res) => {
     try {
         // input validation
-        const {error} = validation.mongoIdValidation(req.params)
+        const {error} = validation.postIdValidation(req.params)
         if (error){
             //send a response with status code 400 (Bad Request) and error details
             return res.status(400).send({validationError: error['details'][0]['message']});  
@@ -93,7 +93,7 @@ const createComment = async(req, res) => {
 const getCommentById = async(req, res) => {
     try {
         // input validation
-        const {error} = validation.mongoIdValidation(req.params)
+        const {error} = validation.commentIdValidation(req.params)
         if (error){
             //send a response with status code 400 (Bad Request) and error details
             return res.status(400).send({validationError: error['details'][0]['message']});  
@@ -121,7 +121,7 @@ const getCommentById = async(req, res) => {
 const updateCommentById = async(req, res) => {
     try {
         // input validation
-        const {error} = validation.mongoIdValidation(req.params)
+        const {error} = validation.commentIdValidation(req.params)
         if (error){
             //send a response with status code 400 (Bad Request) and error details
             return res.status(400).send({validationError: error['details'][0]['message']});  
@@ -156,7 +156,7 @@ const updateCommentById = async(req, res) => {
 const deleteCommentById = async(req, res) => {
     try {
         // input validation
-        const {error} = validation.mongoIdValidation(req.params)
+        const {error} = validation.commentIdValidation(req.params)
         if (error){
             //send a response with status code 400 (Bad Request) and error details
             return res.status(400).send({validationError: error['details'][0]['message']});  

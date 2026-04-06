@@ -12,6 +12,9 @@ router.get('/getAll', validation.tokenValidation, likeService.getAllLikes);
 // find a like by its ID, using a GET request to the '/api/likes/:likeId' endpoint
 router.get('/:likeId', validation.tokenValidation, likeService.getLikeById); 
 
+// delete all likes, using a DELETE request to the '/api/likes/deleteAll' endpoint
+router.delete('/deleteAll', validation.tokenValidation, likeService.deleteAllLikes);
+
 
 // export the router to be used in app.js
 module.exports = router;

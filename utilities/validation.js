@@ -72,9 +72,6 @@ const tokenValidation = (req, res, next) => {
     try {
         // get the token from the 'auth-token' header
         const token = req.header('auth-token');
-        const tokenSecret = config.TOKEN_SECRET;
-        // print header nd print token and token secret for debugging purposes
-        console.log('header', req.headers);
         console.log("Received token from request header:", token);
 
         // validate token exists in the request header
@@ -136,7 +133,7 @@ const createPostValidation = (data) => {
         text: joi.string().required().min(10).max(1024),
         hashtag: joi.string().required().min(3).max(256),
         location: joi.string().required().min(3).max(256),
-        url: joi.string().required().uri().min(3).max(1024),
+        url: joi.string().required().min(3).max(1024),
         likes: joi.number().required().integer().min(0).max(1000000),
         comments: joi.number().required().integer().min(0).max(1000000)        
     })
@@ -171,11 +168,11 @@ const updatePostValidation = (data) => {
 
 
 /*
-    Name    : mongoIdValidation
+    Name    : postIdValidation
     Purpose :  Input validation for ID of document from MongoDB, must be 24 alphanumeric characters.
                if the validation is successful, the input is valid otherwise, an error message is returned.
 */
-const mongoIdValidation = (data) => {
+const postIdValidation = (data) => {
 
     const schemaValidaton = joi.object({
         postId: joi.string().required().min(24).max(24).alphanum()      
@@ -183,6 +180,56 @@ const mongoIdValidation = (data) => {
     // Use the defined schema to validate the input data and return the result of the validation
     return schemaValidaton.validate(data);
 }
+
+
+
+/*
+    Name    : userIdValidation
+    Purpose :  Input validation for ID of document from MongoDB, must be 24 alphanumeric characters.
+               if the validation is successful, the input is valid otherwise, an error message is returned.
+*/
+const userIdValidation = (data) => {
+
+    const schemaValidaton = joi.object({
+        userId: joi.string().required().min(24).max(24).alphanum()      
+    })
+    // Use the defined schema to validate the input data and return the result of the validation
+    return schemaValidaton.validate(data);
+}
+
+
+
+/*
+    Name    : commentIdValidation
+    Purpose :  Input validation for ID of document from MongoDB, must be 24 alphanumeric characters.
+               if the validation is successful, the input is valid otherwise, an error message is returned.
+*/
+const commentIdValidation = (data) => {
+
+    const schemaValidaton = joi.object({
+        commentId: joi.string().required().min(24).max(24).alphanum()      
+    })
+    // Use the defined schema to validate the input data and return the result of the validation
+    return schemaValidaton.validate(data);
+}
+
+
+
+/*
+    Name    : likeIdValidation
+    Purpose :  Input validation for ID of document from MongoDB, must be 24 alphanumeric characters.
+               if the validation is successful, the input is valid otherwise, an error message is returned.
+*/
+const likeIdValidation = (data) => {
+
+    const schemaValidaton = joi.object({
+        likeId: joi.string().required().min(24).max(24).alphanum()      
+    })
+    // Use the defined schema to validate the input data and return the result of the validation
+    return schemaValidaton.validate(data);
+}
+
+
 
 
 
@@ -230,8 +277,8 @@ const likeValidation = (data) => {
 const dateSearchValidation = (data) => {
 
     const schemaValidaton = joi.object({
-        startDate: joi.required().date(),
-        endDate: joi.required().date().greater(joi.ref('startDate'))     
+        startDate: joi.date().required(),
+        endDate: joi.date().required().greater(joi.ref('startDate'))     
     })
 
     // Use the defined schema to validate the input data and return the result of the validation
@@ -243,15 +290,32 @@ const dateSearchValidation = (data) => {
     Purpose : Input validation for searching by date using the Joi library.
               if the validation is successful, the date input is valid otherwise, an error message is returned.
 */
-const inputSearchValidation = (data) => {
+const usernameSearchValidation = (data) => {
 
     const schemaValidaton = joi.object({
-        input: joi.required().string().min(3).max(256)   
+        username: joi.string().required().min(3).max(256)   
     })
 
     // Use the defined schema to validate the input data and return the result of the validation
     return schemaValidaton.validate(data);
 }
+
+
+/*
+    Name    : inputSearchValidation
+    Purpose : Input validation for searching by date using the Joi library.
+              if the validation is successful, the date input is valid otherwise, an error message is returned.
+*/
+const titleSearchValidation = (data) => {
+
+    const schemaValidaton = joi.object({
+        keywords: joi.string().required().min(3).max(256)   
+    })
+
+    // Use the defined schema to validate the input data and return the result of the validation
+    return schemaValidaton.validate(data);
+}
+
 
 
 
@@ -265,8 +329,12 @@ module.exports = {
     updatePostValidation,
     commentValidation,
     likeValidation,
-    mongoIdValidation, 
     dateSearchValidation,
-    inputSearchValidation
+    usernameSearchValidation,
+    titleSearchValidation,
+    postIdValidation,
+    userIdValidation,
+    commentIdValidation,
+    likeIdValidation
 };
 

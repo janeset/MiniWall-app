@@ -15,7 +15,7 @@ const validation = require('../utilities/validation');
 const likePost = async(req, res) => {
     try{
         // input validation
-        const {error} = validation.likeValidation(req.body)
+        const {error} = validation.postIdValidation(req.params)
         if (error){
             //send a response with status code 400 (Bad Request) and error details
             return res.status(400).send({validationError: error['details'][0]['message']});  
@@ -78,7 +78,7 @@ const likePost = async(req, res) => {
 const unlikePost = async(req, res) => {
     try{
         // input validation
-        const {error} = validation.likeValidation(req.body)
+        const {error} = validation.postIdValidation(req.params)
         if (error){
             //send a response with status code 400 (Bad Request) and error details
             return res.status(400).send({validationError: error['details'][0]['message']});  
@@ -138,7 +138,7 @@ const unlikePost = async(req, res) => {
 const getAllLikesByPostId = async(req, res) => {
     try {
         // input validation
-        const {error} = validation.mongoIdValidation(req.params)
+        const {error} = validation.postIdValidation(req.params)
         if (error){
             //send a response with status code 400 (Bad Request) and error details
             return res.status(400).send({validationError: error['details'][0]['message']});  
@@ -167,7 +167,7 @@ const getAllLikesByPostId = async(req, res) => {
 const getLikeById = async(req, res) => {
     try {
         // input validation
-        const {error} = validation.mongoIdValidation(req.params)
+        const {error} = validation.likeIdValidation(req.params)
         if (error){
             //send a response with status code 400 (Bad Request) and error details
             return res.status(400).send({validationError: error['details'][0]['message']});  
@@ -208,6 +208,28 @@ const getAllLikes = async(req, res) => {
 
 
 
+/*
+    Name    : deleteAllLikes
+    Purpose :  - Use 'DELETE request' with the '/api/likes/deleteAll' endpoint, to delete all likes from the database.
+    returns  : - 200 OK status if the operation is successful
+               - 400 Bad Request status with an error message if there is an error during the deletion process
+*/
+const deleteAllLikes = async(req, res) => {
+    try {
+        const deletedLikes = await Like.deleteMany();
+        res.status(200).json(deletedLikes);
+    } catch (error) {
+        if (error.name === 'CastError' || error.name === 'ValidationError' || error.name === 'TypeError') {
+            return res.status(400).json({ message: `${error.name}: ${error.message}.  Invalid ${error.path}: ${error.value}` });
+        }  
+        console.error('Error deleting all likes:', error);
+        res.status(400).send({message:error});
+    }
+}
+
+
+
+
 
 // Export all methods so that it can be used in other parts of the application.
 module.exports = {
@@ -215,5 +237,6 @@ module.exports = {
     unlikePost,
     getAllLikesByPostId,
     getLikeById, 
-    getAllLikes
+    getAllLikes,
+    deleteAllLikes
 }

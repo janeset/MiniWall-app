@@ -75,7 +75,7 @@ const createPost = async(req, res) => {
 const getPostById = async(req, res) => {
     try {
         // input validation
-        const {error} = validation.mongoIdValidation(req.params)
+        const {error} = validation.postIdValidation(req.params)
         if (error){
             //send a response with status code 400 (Bad Request) and error details
             return res.status(400).send({validationError: error['details'][0]['message']});  
@@ -144,7 +144,7 @@ const updatePostById = async(req, res) => {
 const deletePostById = async(req, res) => {
     try {
         // input validation
-        const {error} = validation.mongoIdValidation(req.params)
+        const {error} = validation.postIdValidation(req.params)
         if (error){
             //send a response with status code 400 (Bad Request) and error details
             return res.status(400).send({validationError: error['details'][0]['message']});  
@@ -175,7 +175,7 @@ const getPostwithCommentsById = async(req, res) => {
     try {
 
         // input validation
-        const {error} = validation.mongoIdValidation(req.params)
+        const {error} = validation.postIdValidation(req.params)
         if (error){
             //send a response with status code 400 (Bad Request) and error details
             return res.status(400).send({validationError: error['details'][0]['message']});  

@@ -103,7 +103,7 @@ const updateUserById = async(req, res) => {
     try {
 
         // input validation
-        const {error} = validation.mongoIdValidation(req.params)
+        const {error} = validation.userIdValidation(req.params)
         if (error){
             //send a response with status code 400 (Bad Request) and error details
             return res.status(400).send({validationError: error['details'][0]['message']});  
@@ -152,7 +152,7 @@ const updateUserById = async(req, res) => {
 const deleteUserById = async(req, res) => {
     try {
         // input validation
-        const {error} = validation.mongoIdValidation(req.params)
+        const {error} = validation.userIdValidation(req.params)
         if (error){
             //send a response with status code 400 (Bad Request) and error details
             return res.status(400).send({validationError: error['details'][0]['message']});  
@@ -210,7 +210,7 @@ const getAllRegisteredUsers = async(req, res) => {
 const getUserById = async(req, res) => {
     try {
         // input validation
-        const {error} = validation.mongoIdValidation(req.params)
+        const {error} = validation.userIdValidation(req.params)
         if (error){
             //send a response with status code 400 (Bad Request) and error details
             return res.status(400).send({validationError: error['details'][0]['message']});  
