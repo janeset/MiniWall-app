@@ -1,5 +1,6 @@
 require('dotenv/config'); // Load environment variables from .env file
 
+// Define configuration settings for the application, using environment variable.
 module.exports = {
     PORT: process.env.PORT || 3000, //default to 3000 if PORT is not defined in .env
     DB_CONNECTION: process.env.DB_CONNECTION,

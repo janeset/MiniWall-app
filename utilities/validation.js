@@ -72,6 +72,7 @@ const tokenValidation = (req, res, next) => {
     try {
         // get the token from the 'auth-token' header
         const token = req.header('auth-token');
+        const tokenSecret = config.TOKEN_SECRET;
         console.log("Received token from request header:", token);
 
         // validate token exists in the request header

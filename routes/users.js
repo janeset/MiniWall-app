@@ -4,7 +4,7 @@ const userService = require('../services/userService');
 const validation = require('../utilities/validation');
 
 
-// Define the routes for the posts endpoints and associate them with the corresponding methods from the userService.js file
+// Define the routes for the user endpoints and associate them with the corresponding methods from the userService.js file
 
 // (Create) Register an user, using a POST request to the '/api/users/register' endpoint
 router.post('/register', userService.createUser); 

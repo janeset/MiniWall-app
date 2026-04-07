@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 
-// Import the methods function from the postService.js file to handle the logic for each endpoint
+// Import the methods function from the proper service file to handle the logic for each endpoint
 const postService = require('../services/postService'); 
 const commentService = require('../services/commentService');
 const likeService = require('../services/likeService');
@@ -10,11 +10,10 @@ const postSearchService = require('../services/postSearchService');
 const validation = require('../utilities/validation');
 
 
-// Define the routes for the posts endpoints and associate them with the corresponding methods from the postService.js file
+// Define the routes for the posts endpoints and associate them with the corresponding methods from the proper service file
 
 // Use the getAllPosts function to handle GET requests to the /api/posts/getAll endpoint
 router.get('/getAll', validation.tokenValidation, postService.getAllPosts);
-router.get('/getAll2', postService.getAllPosts);
 
 // Use the createPost function to handle POST requests to the /api/posts/new endpoint
 router.post('/new', validation.tokenValidation, postService.createPost); 

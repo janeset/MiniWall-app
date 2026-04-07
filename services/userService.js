@@ -1,3 +1,5 @@
+const express = require('express');
+const router = express.Router();
 const User = require('../models/User');
 const bcryptjs = require('bcryptjs');
 const jsonwebtoken = require('jsonwebtoken');
@@ -79,7 +81,7 @@ const loginUser = async(req, res) => {
         // Create and assign a token
         const token = jsonwebtoken.sign({_id: user._id}, process.env.TOKEN_SECRET);
         res.header('auth-token', token)
-            .send({message: "Login successful.", "username": user.username, "token": token});
+            .send({message: "Login successful.", "username": user.username, "token": token, user: {username: user.username, email: user.email}});
                 
 
     } catch (error) {

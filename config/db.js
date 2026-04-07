@@ -1,10 +1,12 @@
-const config = require('./config'); // Import configuration settings
+// import modules and configuration settings
+const config = require('./config'); 
 const mongoose = require('mongoose');
 
 
-
+// db connection settings
 const uri = config.DB_CONNECTION;
 const databaseName = config.DB_NAME;
+
    
 //connect to mongoDB
 function connectDB() {
@@ -16,7 +18,6 @@ function connectDB() {
     }
 }
 
-// reference https://masteringjs.io/tutorials/mongoose/connection-status 
 
 // Check the connection status
 function dbConnectionStatus() {

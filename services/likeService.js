@@ -20,18 +20,17 @@ const likePost = async(req, res) => {
             //send a response with status code 400 (Bad Request) and error details
             return res.status(400).send({validationError: error['details'][0]['message']});  
         } 
+        // validate post exists
         const getPostById = await Post.findById(req.params.postId);
         if (!getPostById) {
             return res.status(404).send({message:`Post not found: ${req.params.postId}`});
         } 
-        
-        //TO-DO: get user by email from request body and validate user is not 'Liking' their own post
-        //  before creating a like document in the database
+        // validate user exists
         const getUserByEmail = await User.findOne({ email: req.body.email });
         if (!getUserByEmail) {
             return res.status(404).send({message:`User not found: ${req.body.email}`});
-        } else {            
-            
+
+        } else {                        
             // validate user is not 'Liking' their own post 
             if (getUserByEmail._id.toString() === getPostById.userId) {
                 return res.status(400).send({message:'You cannot like your own post'});
@@ -84,13 +83,13 @@ const unlikePost = async(req, res) => {
             return res.status(400).send({validationError: error['details'][0]['message']});  
         } 
 
+        // validate post exists
         const getPostById = await Post.findById(req.params.postId);
         if (!getPostById) {
             return res.status(404).send({message:`Post not found: ${req.params.postId}`});
-        } else {            
-            
-            //TO-DO: get user by email from request body and validate user is not 'Liking' their own post
-            //  before creating a like document in the database
+
+        } else { 
+            // validate user exists
             const getUserByEmail = await User.findOne({ email: req.body.email });
             if (!getUserByEmail) {
                 return res.status(404).send({message:`User not found: ${req.body.email}`});

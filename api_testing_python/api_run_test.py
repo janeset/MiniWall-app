@@ -64,6 +64,7 @@ def create_user_test(session_data, payload) -> None:
         print(f'Error [{func_name}] - Details: {e}')
 
 
+
 def login_user_test(session_data, payload) -> None:
     """
     Test user Login using the API
@@ -86,14 +87,12 @@ def login_user_test(session_data, payload) -> None:
             # save user auth-token to session using username as key if exists
             if username in session_data.users_collection:
                 session_data.users_collection[username]["token"] = res.json()["token"]
-            # save token for session if empty
-            if session_data.auth_token is None:
-                session_data.auth_token = res.json()["token"]
         else:
             print(f"Expected payload {payload} but got {res.json()}")
 
     except Exception as e:
         print(f'Error [{func_name}] - Details: {e}')
+
 
 
 def user_create_post_test(session_data, payload) -> None:
@@ -131,6 +130,7 @@ def user_create_post_test(session_data, payload) -> None:
         print(f'Error [{func_name}] - Details: {e}')
 
 
+
 def get_posts_by_auth_user_test(session_data, username) -> None:
     """
     Test authenticated user can retrieve all posts using the API
@@ -164,6 +164,7 @@ def get_posts_by_auth_user_test(session_data, username) -> None:
         print(f'Error [{func_name}] - Details: {e}')
 
 
+
 def get_posts_not_auth_user_test(session_data, username) -> None:
     """
     Test non-authenticated user fails to retrieve all posts using the API
@@ -195,6 +196,7 @@ def get_posts_not_auth_user_test(session_data, username) -> None:
 
     except Exception as e:
         print(f'Error [{func_name}] - Details: {e}')
+
 
 
 def create_comment_in_post_test(session_data, payload, post_owner) -> None:
@@ -231,6 +233,7 @@ def create_comment_in_post_test(session_data, payload, post_owner) -> None:
         print(f'Error [{func_name}] - Details: {e}')
 
 
+
 def get_post_with_comments_test(session_data, post_owner) -> None:
     """
     Test authenticated user can retrieve post with comments using the API
@@ -259,6 +262,7 @@ def get_post_with_comments_test(session_data, post_owner) -> None:
 
     except Exception as e:
         print(f'Error [{func_name}] - Details: {e}')
+
 
 
 def user_comment_own_post_test(session_data, post_owner) -> None:
@@ -294,6 +298,7 @@ def user_comment_own_post_test(session_data, post_owner) -> None:
         print(f'Error [{func_name}] - Details: {e}')
 
 
+
 def like_post_test(session_data, username, user_like_payload, post_owner) -> None:
     """
     Test authenticated user can like a post using the API
@@ -323,6 +328,7 @@ def like_post_test(session_data, username, user_like_payload, post_owner) -> Non
 
     except Exception as e:
         print(f'Error [{func_name}] - Details: {e}')
+
 
 
 def search_posts_by_dates_test(session_data, username, date_payload) -> None:
@@ -356,9 +362,10 @@ def search_posts_by_dates_test(session_data, username, date_payload) -> None:
         print(f'Error [{func_name}] - Details: {e}')
 
 
+
 def search_posts_by_title_test(session_data, username) -> None:
     """
-    Test authenticated user can search posts by title keywords using the API
+    Test authenticated user can search posts by title keyword using the API
     """
     try:
         endpoint = f"{API.BASE_URL}:{API.PORT}{ENDPOINT.SEARCH_POST_BY_TITLE_KEYWORDS.format(keywords='gym')}"
@@ -385,6 +392,7 @@ def search_posts_by_title_test(session_data, username) -> None:
 
     except Exception as e:
         print(f'Error [{func_name}] - Details: {e}')
+
 
 
 def search_posts_by_username_test(session_data, username) -> None:
@@ -419,6 +427,7 @@ def search_posts_by_username_test(session_data, username) -> None:
         print(f'Error [{func_name}] - Details: {e}')
 
 
+
 def delete_likes_test(session_data, username) -> None:
     """
     Test authenticated user can delete likes using the API
@@ -443,6 +452,7 @@ def delete_likes_test(session_data, username) -> None:
 
     except Exception as e:
         print(f'Error [{func_name}] - Details: {e}')
+
 
 
 def delete_posts_test(session_data, username) -> None:
@@ -475,6 +485,7 @@ def delete_posts_test(session_data, username) -> None:
         print(f'Error [{func_name}] - Details: {e}')
 
 
+
 def delete_users_test(session_data) -> None:
     """
     test authenticated user can delete users using the API
@@ -498,6 +509,7 @@ def delete_users_test(session_data) -> None:
 
     except Exception as e:
         print(f'Error [{func_name}] - Details: {e}')
+
 
 
 def delete_comments_test(session_data, username) -> None:
@@ -622,7 +634,7 @@ if __name__ == '__main__':
     user_comment_own_post_test(session, "GraceAshcroft")
     print('-' * 50)
 
-    #USER GETS POST WITH ALL COMMENTS
+    # USER GETS POST WITH ALL COMMENTS
     print('Test Post with Comments by User_3 - Grace')
     get_post_with_comments_test(session, "GraceAshcroft")
     print('-' * 50)
@@ -675,12 +687,10 @@ if __name__ == '__main__':
     delete_comments_test(session, "AdaWong")
     print('-' * 50)
 
-
     # DELETE POST - CLEAN UP
     print('DELETE POSTS - CLEAN UP')
     delete_posts_test(session, "AdaWong")
     print('-' * 50)
-
 
     # DELETE USERS - CLEAN UP
     print('DELETE USERS - CLEAN UP')

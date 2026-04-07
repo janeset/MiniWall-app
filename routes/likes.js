@@ -4,7 +4,7 @@ const likeService = require('../services/likeService');
 const validation = require('../utilities/validation');  
 
 
-// Define the routes for the posts endpoints and associate them with the corresponding methods from the like Service.js file
+// Define the routes for the like endpoints and associate them with the corresponding methods from the likeService.js file
 
 // find all likes, using a GET request to the '/api/likes/getAll' endpoint
 router.get('/getAll', validation.tokenValidation, likeService.getAllLikes); 

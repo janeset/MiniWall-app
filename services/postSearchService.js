@@ -22,6 +22,7 @@ const searchPostsByTitle = async (req, res) => {
         if (!keywords) {
             return res.status(400).json({ message: "Keywords can not be empty." });
         }
+        // Build a regular expression pattern that matches any of the keywords in the title, ignoring case and allowing for partial matches
         const allWordsPattern = keywords.split(' ')
                                 .filter(word => word)
                                 .map(word => `(?=.*${word})`)
@@ -157,7 +158,7 @@ const searchPostsByDateRange = async (req, res) => {
 
 
 
-
+// Export all methods so that it can be used in other parts of the application.
 module.exports = {
     searchPostsByDateRange,
     searchPostsByUsername,

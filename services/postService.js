@@ -41,7 +41,7 @@ const createPost = async(req, res) => {
             //send a response with status code 400 (Bad Request) and error details
             return res.status(400).send({validationError: error['details'][0]['message']});  
         } 
-
+        // create a new post document in the database using the data from the request body and save it to the database, then send the created post back to the client
         const postData = new Post({
             userId: req.body.userId,
             username: req.body.username,
@@ -51,7 +51,7 @@ const createPost = async(req, res) => {
             location: req.body.location,
             url: req.body.url
         })
-
+        // save the new post document to the database and send the created post back to the client
         const postToSave = await postData.save();
         res.send(postToSave);
 
@@ -80,6 +80,7 @@ const getPostById = async(req, res) => {
             //send a response with status code 400 (Bad Request) and error details
             return res.status(400).send({validationError: error['details'][0]['message']});  
         } 
+        // retrieve the post from the database using the findById method and send it back to the client
         const getPostById = await Post.findById(req.params.postId);
         res.send(getPostById);
 

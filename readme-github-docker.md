@@ -3,7 +3,7 @@
 
 1 - Create nodeJs app locally
 
-* Github setup
+# Github setup
 
 1- Create private repo in github website
 
@@ -39,7 +39,7 @@
 
 
 # deploy to Google Cloud Platform (GCP)
-- NOTE:  ensure the user you are using has admin rights!!!
+- NOTE:  ensure the user you are using has admin rights!!!  (docker-vm. user=docker-user2 pass=docker)
 
 1- open terminal collection in your CloudVM using SSH
 

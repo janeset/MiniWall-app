@@ -3,7 +3,7 @@ const router = express.Router();
 const commentService = require('../services/commentService');
 const validation = require('../utilities/validation');
 
-// Define the routes for the posts endpoints and associate them with the corresponding methods from the postService.js file
+// Define the routes for the comments endpoints and associate them with the corresponding methods from the commentService.js file
 
 // Use the getAllComments function to handle GET requests to the '/api/comments/getAll' endpoint
 router.get('/getAll', validation.tokenValidation, commentService.getAllComments); 
