@@ -168,7 +168,7 @@ const deletePostById = async(req, res) => {
 
 /*
     Name    : getPostwithCommentsById
-    Purpose :  - Use 'GET request' with the '/api/posts/:postId/comments' endpoint, to retrieve a post by its ID from the database.
+    Purpose :  -Use 'GET request' with the '/api/posts/:postId/comments' endpoint, to retrieve a post by its ID from the database and all associated comments.
     returns  : - 200 OK status with the retrieved post in JSON format if the operation is successful
                - 400 Bad Request status with an error message if there is an error during the retrieval process
 */

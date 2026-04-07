@@ -9,8 +9,8 @@ const validation = require('../utilities/validation');
 
 /*
     Name    : createUser
-    Purpose :  - Use 'POST request' with the '/api/comments/:postId/new' endpoint, to create a new comment in the database, and send the created comment back to the client in JSON format.
-    returns  : - 200 OK status with the created comment in JSON format if the operation is successful
+    Purpose :  - Use 'POST request' with the '/api/users/register' endpoint, to create a new user in the database, and send the created user back to the client in JSON format.
+    returns  : - 200 OK status with the created user in JSON format if the operation is successful
                - 400 Bad Request status with an error message if there is an error during the creation process
 */
 const createUser = async(req, res) => {
